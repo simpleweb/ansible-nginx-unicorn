@@ -1,16 +1,24 @@
 ---
 - name: Update/Install nginx
   apt: name=nginx state=latest
+  sudo: yes
 
 - name: Generate site configurations
   template: src=nginx-site.j2 dest=/etc/nginx/sites-available/{{ item.name }} owner=root group=root mode=0644
   notify:
     - reload nginx
   with_items: nginx_sites
+  sudo: yes
+
+- name: Delete default vhost
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+  sudo: yes
+  notify:
+    - reload nginx
 
 - name: Enable sites
   file: src=/etc/nginx/sites-available/{{ item.name }} dest=/etc/nginx/sites-enabled/{{ item.name }} state=link owner=root group=root mode=0644
   notify:
     - reload nginx
   with_items: nginx_sites
-
+  sudo: yes
