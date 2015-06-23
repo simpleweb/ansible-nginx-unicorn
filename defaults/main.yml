@@ -1,2 +1,4 @@
 ---
 nginx_sites: []
+nginx_workers: 4
+nginx_gzip: true
